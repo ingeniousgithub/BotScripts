@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "==========================="
+echo "Failed Integration Post Script"
+echo "==========================="
+
+
+echo Failed integration ${XCS_INTEGRATION_NUMBER}
+echo Repo dir ${XCS_PRIMARY_REPO_DIR} 
+

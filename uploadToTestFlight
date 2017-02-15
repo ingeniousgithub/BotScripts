@@ -5,9 +5,6 @@ echo "=================================="
 echo ""
 date
 
-# temporary hack to make this work
-#BOT_BRANCH=$1
-
 THIS_VERSION_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMed/IngeniousMed-Info.plist`
 THIS_BUILD_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMed/IngeniousMed-Info.plist`
 

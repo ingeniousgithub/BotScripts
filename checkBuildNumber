@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ "$1" != "" ]; then
+  echo "Using $1 as BOT_CONFIG"
+  BOT_CONFIG=$1
+fi
+
+echo "Using $1 as BOT_CONFIG"
 echo "XCS_PRIMARY_REPO_DIR: $XCS_PRIMARY_REPO_DIR"
 
 THIS_BUILD_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMedArchive-Info.plist`

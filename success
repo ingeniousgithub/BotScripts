@@ -5,7 +5,7 @@ echo "Running SuccessScript"
 echo "==========================="
 
 if [ $XCS_INTEGRATION_RESULT == "succeeded" ] ; then
-    echo "Uploading to Testflight following successful integration"
-  ~/BotConfig/uploadToTestFlight $1 
+    echo "Congratulations on another successful integration!"
+  ~/BotConfig/uploadToTestFlight 
 fi
 
