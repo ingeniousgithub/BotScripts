@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Occasionally, bots will get stuck on "Pending" for no apparent reason.  In which case, go through the recent integrations 
+# and delete any cancelled ones.  Cancelling may leave a bot in an odd state, so we follow with this restart command:
+
+sudo xcrun xcscontrol --restart

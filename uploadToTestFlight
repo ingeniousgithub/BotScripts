@@ -1,0 +1,129 @@
+#!/bin/sh
+echo "=================================="
+echo "UploadToTestFlight Script"
+echo "=================================="
+echo ""
+date
+
+# temporary hack to make this work
+#BOT_BRANCH=$1
+
+THIS_VERSION_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMed/IngeniousMed-Info.plist`
+THIS_BUILD_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMed/IngeniousMed-Info.plist`
+
+PRIOR_VERSION_NUMBER=`defaults read com.ingeniousmed.xcodeserver "${BOT_BRANCH}VersionNumber"`
+
+PRIOR_BUILD_NUMBER=`defaults read com.ingeniousmed.xcodeserver "${BOT_BRANCH}BuildNumber"`
+
+if [ "$PRIOR_VERSION_NUMBER" != "$THIS_VERSION_NUMBER" ]; then
+     echo "Version number has changed from $PRIOR_VERSION_NUMBER to ${THIS_VERSION_NUMBER}."
+     `defaults write com.ingeniousmed.xcodeserver "${BOT_BRANCH}VersionNumber" "$THIS_VERSION_NUMBER"`
+     PRIOR_BUILD_NUMBER="-1"
+fi 
+
+if [ "$PRIOR_BUILD_NUMBER" == "$THIS_BUILD_NUMBER" ]; then
+     echo "Build number has not changed. Exiting..."
+     exit 0
+fi 
+
+echo "Saving new build: $THIS_VERSION_NUMBER ($THIS_BUILD_NUMBER)"
+
+`defaults write com.ingeniousmed.xcodeserver "${BOT_BRANCH}BuildNumber" "$THIS_BUILD_NUMBER"`
+
+
+echo ""
+echo "=========== Changing dir from =========="
+pwd
+cd "$XCS_PRIMARY_REPO_DIR"
+cd source
+echo "================= to ==================="
+echo ""
+pwd
+
+echo ""
+echo "Available environment variables:"
+set
+echo ""
+
+EXPORT_PATH="/Users/xcodeserver/builds"
+ARCHIVE_PATH="${EXPORT_PATH}/IngeniousMedTestflight.xcarchive"
+EXPORT_OPTIONS="/Users/xcodeserver/BotConfig/exportOptions.plist"
+
+alias altool="/Applications/Xcode.app/Contents/Applications/Application\ Loader.app/Contents/Frameworks/ITunesSoftwareService.framework/Support/altool"
+
+rm -R ${EXPORT_PATH}/IngeniousMedTestflight*
+
+echo ""
+echo "============ xcodebuild settings ============"
+echo ""
+xcodebuild -version
+xcodebuild -showsdks
+xcodebuild -list -project IngeniousMed.xcodeproj
+xcodebuild -showBuildSettings
+xcodebuild clean
+
+echo ""
+echo "============ xcodebuild create archive ============="
+echo ""
+
+xcodebuild -scheme IngeniousMedTestflight archive \
+-archivePath "$ARCHIVE_PATH"
+
+echo ""
+echo "============ xcodebuild export archive ============="
+echo ""
+
+xcodebuild -exportArchive \
+-archivePath "$ARCHIVE_PATH" \
+-exportPath "$EXPORT_PATH" \
+-exportOptionsPlist "$EXPORT_OPTIONS"
+
+echo ""
+echo "============ altool validate app ============="
+echo ""
+
+altool --validate-app \
+-f ${EXPORT_PATH}/IngeniousMedTestflight.ipa \
+-u testflightdev@ingeniousmed.com \
+-p 'fuak-gfwx-ozag-tgwi'
+
+echo ""
+echo "============ altool upload app ============="
+echo ""
+
+altool --upload-app \
+-f ${EXPORT_PATH}/IngeniousMedTestflight.ipa \
+-u testflightdev@ingeniousmed.com \
+-p 'fuak-gfwx-ozag-tgwi'
+
+echo ""
+echo "============ ftp upload iPhone 6S simulator app to Sharefile ============="
+echo ""
+
+
+APP_ZIP_FILE="IngeniousMedIPhone6SSimulator.${THIS_VERSION_NUMBER}.${THIS_BUILD_NUMBER}.app.zip" 
+SIMULATOR_UUID=`instruments -s devices | grep "iPhone 6s" | sed -e "s/^.*\[\(.*\)].*$/\1/"`
+APP_PATH_FOR_6S_SIMULATOR="/Users/xcodeserver/Library/Developer/CoreSimulator/Devices/${SIMULATOR_UUID}/data/Containers/Bundle/Application/"
+
+NEW_PATH=`ls -tr $APP_PATH_FOR_6S_SIMULATOR | tail -1`
+ZIP_PATH="${APP_PATH_FOR_6S_SIMULATOR}${NEW_PATH}/IngeniousMed.app"
+
+echo ""
+echo "============ Zipping $ZIP_PATH to $APP_ZIP_FILE ============="
+echo ""
+
+zip -r -q "$APP_ZIP_FILE" "${ZIP_PATH}" && echo "Successful zip." || echo "Zip failed."
+
+ftp << ** 
+open ingeniousmed.sharefileftp.com
+cd foccef6c-e954-4c39-998f-9595bcea3a00
+put "$APP_ZIP_FILE"
+bye
+**
+
+rm "$APP_ZIP_FILE"
+
+date
+echo ""
+echo "=========== Post-Integration Success Script Complete ============="
+echo ""

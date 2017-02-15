@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "XCS_PRIMARY_REPO_DIR: $XCS_PRIMARY_REPO_DIR"
+
+THIS_BUILD_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMedArchive-Info.plist`
+
+echo "This Build Number: $THIS_BUILD_NUMBER"
+
+LAST_UPLOADED_BUILD_NUMBER=`defaults read com.ingeniousmed.xcodeserver "Last${BOT_BRANCH}BuildNumber"`
+
+echo "Last Uploaded Build Number: $LAST_UPLOADED_BUILD_NUMBER"
+
+
