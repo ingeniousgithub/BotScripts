@@ -6,7 +6,6 @@ echo "==========================================="
 echo ""
 echo "ENV var BUILD_NUMBER = $BUILD_NUMBER"
 
-#BOT_BRANCH=$1
 
 if [ $XCS_ERROR_COUNT -eq 0 ] && [ $XCS_TEST_FAILURE_COUNT -eq 0 ]; then
 LAST_UPLOADED_BUILD_NUMBER=`defaults read com.ingeniousmed.xcodeserver "Last${BOT_BRANCH}BuildNumber"`

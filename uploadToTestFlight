@@ -98,7 +98,7 @@ echo "============ ftp upload iPhone 6S simulator app to Sharefile =============
 echo ""
 
 
-APP_ZIP_FILE="IngeniousMedIPhone6SSimulator.${THIS_VERSION_NUMBER}.${THIS_BUILD_NUMBER}.app.zip" 
+APP_ZIP_FILE="IngeniousMed.${THIS_VERSION_NUMBER}.${THIS_BUILD_NUMBER}.app.zip" 
 SIMULATOR_UUID=`instruments -s devices | grep "iPhone 6s" | sed -e "s/^.*\[\(.*\)].*$/\1/"`
 APP_PATH_FOR_6S_SIMULATOR="/Users/xcodeserver/Library/Developer/CoreSimulator/Devices/${SIMULATOR_UUID}/data/Containers/Bundle/Application/"
 
