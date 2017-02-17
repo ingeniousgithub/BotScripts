@@ -1,10 +1,10 @@
 #!/bin/sh
 
 echo "==========================================="
-echo "Post-Integration Warnings and Issues Script"
+echo "Post-Integration Warnings and Issues Script for ${BOT_BRANCH}"
 echo "==========================================="
 echo ""
-echo "ENV var BUILD_NUMBER = $BUILD_NUMBER"
+echo "ENV var BUILD_NUMBER:  ${BUILD_NUMBER}"
 
 
 if [ $XCS_ERROR_COUNT -eq 0 ] && [ $XCS_TEST_FAILURE_COUNT -eq 0 ]; then
