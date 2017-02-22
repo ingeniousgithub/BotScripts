@@ -88,6 +88,9 @@ echo ""
 echo "============ altool upload app ============="
 echo ""
 
+# app Bundle Identifier com.ingeniousmed.shareableapp maps to IngeniousMed Strategic
+# app Bundle Identifier com.ingeniousmed.imbills maps to IngeniousMed
+
 altool --upload-app \
 -f ${EXPORT_PATH}/IngeniousMedTestflight.ipa \
 -u testflightdev@ingeniousmed.com \

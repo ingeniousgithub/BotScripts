@@ -1,0 +1,2 @@
+cd /Library/Developer/XcodeServer/IntegrationAssets
+ls -ltr

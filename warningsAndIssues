@@ -4,21 +4,15 @@ echo "==========================================="
 echo "Post-Integration Warnings and Issues Script for ${BOT_BRANCH}"
 echo "==========================================="
 echo ""
-echo "ENV var BUILD_NUMBER:  ${BUILD_NUMBER}"
 
 
 if [ $XCS_ERROR_COUNT -eq 0 ] && [ $XCS_TEST_FAILURE_COUNT -eq 0 ]; then
-LAST_UPLOADED_BUILD_NUMBER=`defaults read com.ingeniousmed.xcodeserver "Last${BOT_BRANCH}BuildNumber"`
-
-THIS_BUILD_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMedArchive-Info.plist`
-
-echo "Updating build number from $LAST_UPLOADED_BUILD_NUMBER to $THIS_BUILD_NUMBER"
-
-defaults write com.ingeniousmed.xcodeserver "Last${BOT_BRANCH}BuildNumber" -int $THIS_BUILD_NUMBER
 
 echo "Uploading to Testflight from Warnings and Issues script"
-~/BotConfig/uploadToTestFlight $BOT_BRANCH 
+~/BotConfig/uploadToTestFlight 
+
 else
 
 echo "Cannot upload archive because of build errors or test failures"
+
 fi

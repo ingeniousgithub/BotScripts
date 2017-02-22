@@ -1,18 +1,15 @@
 #!/bin/sh
 
-if [ "$1" != "" ]; then
-  echo "Using $1 as BOT_CONFIG"
-  BOT_CONFIG=$1
-fi
-
-echo "Using $1 as BOT_CONFIG"
+echo "Building ${BOT_BRANCH} branch"
 echo "XCS_PRIMARY_REPO_DIR: $XCS_PRIMARY_REPO_DIR"
+
+THIS_VERSION_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMed/IngeniousMed-Info.plist`
 
 THIS_BUILD_NUMBER=`/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" ${XCS_PRIMARY_REPO_DIR}/source/IngeniousMedArchive-Info.plist`
 
-echo "This Build Number: $THIS_BUILD_NUMBER"
+echo "This Build Number: ${THIS_VERSION_NUMBER}.${THIS_BUILD_NUMBER}"
 
-LAST_UPLOADED_BUILD_NUMBER=`defaults read com.ingeniousmed.xcodeserver "Last${BOT_BRANCH}BuildNumber"`
+LAST_UPLOADED_BUILD_NUMBER=`defaults read com.ingeniousmed.xcodeserver "${BOT_BRANCH}BuildNumber"`
 
 echo "Last Uploaded Build Number: $LAST_UPLOADED_BUILD_NUMBER"
 
